@@ -10,7 +10,7 @@ datasource db {
 model User {
   id       Int      @id @default(autoincrement())
   password String
-  email    String
+  email    String   @unique
   name     String
   role     String
   Bounty   Bounty[]

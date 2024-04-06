@@ -21,5 +21,8 @@ CREATE TABLE "Bounty" (
     CONSTRAINT "Bounty_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
 -- AddForeignKey
 ALTER TABLE "Bounty" ADD CONSTRAINT "Bounty_solvedById_fkey" FOREIGN KEY ("solvedById") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
