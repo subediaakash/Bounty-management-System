@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import createToken from "../utils/createToken";
 import { PrismaClient } from "@prisma/client";
 import { STATUS_CODE } from "../constants";
+
 const prisma = new PrismaClient();
 
 export const Signup = async (req: Request, res: Response) => {
@@ -43,5 +44,40 @@ export const Signup = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error in Signup:", error);
     return res.status(500).json({ message: "Internal server error" });
+  }
+};
+export const signIn = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+  try {
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ message: "Email and password are required" });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    const token = createToken({ email, role: user.role });
+
+    return res
+      .status(200)
+      .json({ message: "Authentication successful", token });
+  } catch (error) {
+    console.error("Error signing in:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
