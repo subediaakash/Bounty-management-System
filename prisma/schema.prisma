@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  password String
+  email    String
+  name     String
+  role     String
+  Bounty   Bounty[]
+}
+
+model Bounty {
+  id               Int     @id @default(autoincrement())
+  name             String
+  problemStatement String
+  price            Int
+  solved           Boolean @default(false)
+  solvedBy         User?   @relation(fields: [solvedById], references: [id])
+  solvedById       Int?
+}
