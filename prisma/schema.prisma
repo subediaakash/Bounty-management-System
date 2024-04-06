@@ -7,12 +7,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  ADMIN
+  STUDENT
+}
+
 model User {
   id       Int      @id @default(autoincrement())
   password String
   email    String   @unique
   name     String
-  role     String
+  role     Role
   Bounty   Bounty[]
 }
 
